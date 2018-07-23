@@ -1,0 +1,80 @@
+/**
+     * 两个栈实现队列
+     */
+    class QueueByStack{
+        Stack stackIn;
+        Stack stackDe;
+
+        //入队列
+        public Object inqueue(Object o){
+            return stackIn.push(o); //直接push到stackIn
+        }
+
+        //出队列
+        public Object dequeue() throws Exception{
+            if (stackDe.isEmpty()){ //stackDe为空时，将stackIn中的数据全部搬运到syackDe中
+                if (stackIn.isEmpty()){
+                    throw new Exception("队列为空");
+                }else {
+                    while (!stackIn.isEmpty()){
+                        stackDe.push(stackIn.pop());
+                    }
+                }
+            }
+            return stackDe.pop();   //pop stackDe栈顶元素
+        }
+
+    }
+
+    /**
+     * 两个队列实现栈
+     */
+    class StackByQueue{
+        Queue queue1;
+        Queue queue2;
+
+        //入栈
+        public Object push(Object o){
+            if (queue1.isEmpty()){
+                return queue2.add(o);
+            }else {
+                return queue1.add(o);
+            }
+        }
+
+        //出栈
+        public Object pop() throws EmptyStackException {
+            if (queue1.isEmpty()&&queue2.isEmpty()){
+                throw new EmptyStackException();
+            }
+            if (queue1.isEmpty()){
+                int size = queue2.size();
+                while (size!=1){
+                    queue1.add(queue2.remove());
+                }
+                return queue2.remove();
+            }else {
+                int size = queue1.size();
+                while (size!=1){
+                    queue2.add(queue1.remove());
+                }
+                return queue1.remove();
+            }
+        }
+    }
+    
+    //出入栈的合法性
+    public boolean check(Object[] pushObject, Object[] popObject){
+        int pushP=0;
+        int popP=0;
+        Stack stack=new Stack();
+        for (int i=0;i<pushObject.length;i++){
+            stack.push(pushObject[pushP++]);
+            while (popP<popObject.length&&popObject[popP].equals(stack.peek())){   //peek只返回栈顶元素，不出栈
+                stack.pop();
+                popP++;
+            }
+        }
+        if (stack.isEmpty())return true;
+        return false;
+    }
